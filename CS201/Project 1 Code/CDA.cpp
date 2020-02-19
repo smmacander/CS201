@@ -300,13 +300,29 @@ template <class elmtype>
 elmtype kthSmallest(elmtype arr[], int front, int back, int k, int size, int capacity){
     if(k > 0 && k <= size){
         int pos = randomPartition(arr, front, back, size, capacity);
-        if (pos-front == k-1) 
+        if (pos-front == k-1){ 
+            cout << "I think " << pos-front << "==" << k-1 << endl;
             return arr[pos];
+        }
     
-        if (pos-front > k-1)
-            return kthSmallest(arr, front, ((pos-1) % capacity), k, size, capacity);
+        if (pos-front > k-1){
+            int newSize;
+            if(front > back){
+                newSize = (back + capacity) - front;
+            }
+            else newSize = back - front;
 
-        return kthSmallest(arr, pos+1, back, k, ((k-pos+front-1) % capacity), capacity);   
+            return kthSmallest(arr, front, ((pos-1) % capacity), k, newSize, capacity);
+        }
+        cout << "K: " << k << "Position-front: " << pos-front << endl;
+
+        int newSize;
+        if(front > back){
+                newSize = (back + capacity) - front;
+            }
+        else newSize = back - front;
+
+        return kthSmallest(arr, (pos+1) % capacity, back, k-pos+front-1, newSize, capacity);   
     }
 
     return arr[back];
@@ -314,6 +330,7 @@ elmtype kthSmallest(elmtype arr[], int front, int back, int k, int size, int cap
 
 template <class elmtype>
 int partition(elmtype arr[], int front, int back, int size, int capacity){
+    cout << endl << "Front: " << front << " Back: " << back << " Size: " << size << " Capacity: " << capacity << endl;
     elmtype x = arr[back];
     int i = front;
     for (int j = front; j != back; j = ((j + 1) % capacity)){
@@ -328,6 +345,7 @@ int partition(elmtype arr[], int front, int back, int size, int capacity){
 
 template <class elmtype>
 int randomPartition(elmtype arr[], int front, int back, int size, int capacity){
+    cout << endl << "Front: " << front << " Back: " << back << " Size: " << size << " Capacity: " << capacity << endl;
     int n = size;
     int pivot = rand() % n;
     swap(&arr[(front + pivot) % capacity], &arr[back]);

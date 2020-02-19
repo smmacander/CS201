@@ -41,4 +41,5 @@ int main(){
     //"10 0 1 2 3 4 5 6 7 8 9"
     cout << "Select is " << A.Select(3) << endl;
 	//Select is 2
+	for (int i=0; i< A.Length();i++) cout << A[i] << " ";  cout << endl;
 }

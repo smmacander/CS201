@@ -13,6 +13,8 @@ template <class elmtype>
 int binarySearch(elmtype arr[], int l, int r, elmtype x); //binary search 
 template <class elmtype>
 void swap(elmtype *a, elmtype *b);  //swap function for partitioning
+template <class elmtype>
+int medianof3(elmtype arr[], int front, int back, int size, int capacity); //median of three for quicksort
 
 template <class elmtype>
 class CDA {
@@ -377,5 +379,10 @@ int binarySearch(elmtype arr[], int l, int r, elmtype x){
         return binarySearch(arr, mid + 1, r, x);
     }
     return -1; 
+}
+
+template <class elmtype>
+int medianof3(elmtype arr[], int front, int back, int size, int capacity){
+    int mid = (front + size/2) % capacity;
 }
 

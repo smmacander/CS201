@@ -64,4 +64,18 @@ int main(){
 	//"0 1 2 3 4 5 6 7 8 9 10 -1"
 	cout << "Ordered is " << A.Ordered() << endl;
 	//Ordered is 0
+	A.QuickSort();
+	for (int i=0; i< A.Length();i++) cout << A[i] << " ";  cout << endl;
+	//"-1 0 1 2 3 4 5 6 7 8 9 10"
+	cout << "Ordered is " << A.Ordered() << endl;
+	//Ordered is True
+	A.DelFront();
+	for (int i=0; i< A.Length();i++) cout << A[i] << " ";  cout << endl;
+	//"0 1 2 3 4 5 6 7 8 9 10"
+	A.DelFront();
+	for (int i=0; i< A.Length();i++) cout << A[i] << " ";  cout << endl;
+	//"1 2 3 4 5 6 7 8 9 10"
+	A.AddEnd(1);
+	for (int i=0; i< A.Length();i++) cout << A[i] << " ";  cout << endl;
+	//"1 2 3 4 5 6 7 8 9 10 1"
 }

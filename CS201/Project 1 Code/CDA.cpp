@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <string.h>
+#include <vector>
 using namespace std;
 
 template <class elmtype>
@@ -15,6 +16,10 @@ template <class elmtype>
 void swap(elmtype *a, elmtype *b);  //swap function for partitioning
 template <class elmtype>
 int medianof3(elmtype arr[], int front, int back, int size, int capacity); //median of three for quicksort
+template <class elmtype>
+void optimizedQuickSort(elmtype arr[], int front, int back, int size, int capacity); //recursive quicksort 
+template <class elmtype>
+void helperInsertionSort(elmtype arr[], int front, int back, int size, int capacity); //helper insertion sort
 
 template <class elmtype>
 class CDA {
@@ -37,7 +42,7 @@ class CDA {
         elmtype Select(int k); //returns the kthsmallest element in the array. 
         void InsertionSort(); //insertion sort
         void QuickSort(); // quick sort
-        void CountingSort(int m);
+        void CountingSort(int m); //counting sort
         int Search(elmtype e); //returns the index of the item if found or -1 otherwise
 
     private:
@@ -276,27 +281,23 @@ int CDA<elmtype>::Search(elmtype e){
 
 template <class elmtype>
 void CDA<elmtype>::InsertionSort(){
-    int i, j;
-    elmtype key;
-    for (i = 1; i < size; i++){
-        key = array[i];
-        j = i - 1;
-        while(j >= 0 && array[j] > key){
-            array[j + 1] = array[j];
-            j = j - 1;
-        }
-        array[j + 1] = key;
-    }
+    helperInsertionSort(array, front, back, size, capacity);
+    isOrdered = true;
 }
 
 template <class elmtype>
 void CDA<elmtype>::QuickSort(){
-    NULL;
+    optimizedQuickSort(array, front, back, size, capacity);
+    isOrdered = true;
 }
 
 template <class elmtype>
 void CDA<elmtype>::CountingSort(int m){
-    NULL;
+    int range = m;
+    vector<int> count(range), output(size);
+    for(int i = front; i <= back; i = ((i+1)%capacity)){
+
+    }
 }
 
 //Helper functions for recursive algorithms
@@ -384,5 +385,94 @@ int binarySearch(elmtype arr[], int l, int r, elmtype x){
 template <class elmtype>
 int medianof3(elmtype arr[], int front, int back, int size, int capacity){
     int mid = (front + size/2) % capacity;
+    if(arr[front] < arr[back]){
+        if(arr[mid] < arr[front]){ //bac
+            swap(&arr[front], &arr[back]);
+            return partition(arr, front, back, size, capacity);
+        }
+        else if(arr[back] < arr[mid]){ //acb
+            return partition(arr, front, back, size, capacity);
+        }
+        else{
+            swap(&arr[mid], &arr[back]); //abc
+            return partition(arr, front, back, size, capacity);
+        }
+    }
+    else if(arr[mid] < arr[back]){ //bca
+        return partition(arr, front, back, size, capacity);
+    }
+    else if(arr[front] < arr[mid]){//cab
+        swap(&arr[front], &arr[back]);
+        return partition(arr, front, back, size, capacity);
+    }
+    else{
+        swap(&arr[mid], &arr[back]); //cba
+        return partition(arr, front, back, size, capacity);
+    }
 }
+
+template <class elmtype>
+void helperInsertionSort(elmtype arr[], int front, int back, int size, int capacity){
+    int i, j;
+    elmtype key;
+    for (i = ((front + 1)%capacity); i != back + 1; i = (i+1)%capacity){
+        key = arr[i];
+        //cout << "Key: " << key << endl;
+        if(i == 0){
+            j = capacity - 1;
+        }
+        else{
+            j = i - 1;
+        }
+        int oneBeforeFront = front - 1;
+        while(j != oneBeforeFront && arr[j] > key){
+            //cout << "Front: " << front << " j: " << j << endl;
+            //cout << "Arr[j]: " << arr[j] << endl;
+            arr[(j + 1)%capacity] = arr[j];
+            if(j == 0){
+                j = capacity - 1;
+            }
+            else{
+                j--;
+            }
+        }
+        //cout << "Front: " << front << endl;
+        //cout << "j + 1 (should be front): " << j + 1 << endl;
+        arr[(j + 1)%capacity] = key; 
+    }
+}
+
+template <class elmtype>
+void optimizedQuickSort(elmtype arr[], int low, int high, int size, int capacity){
+    while(low != high){
+        if(abs(low-high) < 10){
+            helperInsertionSort(arr, low, high, size, capacity);
+            break;
+        }
+        else{
+            int pivot = medianof3(arr, low, high, size, capacity);
+            if(abs(pivot - low) < abs(high - pivot)){
+                if(pivot == 0){
+                    pivot = capacity - 1;
+                }
+                else{
+                    pivot--;
+                }
+                optimizedQuickSort(arr, low, pivot, size, capacity);
+                low = (pivot + 1)%capacity;
+            }
+            else{
+                optimizedQuickSort(arr, ((pivot+1)%capacity), high, size, capacity);
+                if(pivot == 0){
+                    high = capacity - 1;
+                }
+                else{
+                    high = pivot-1;
+                }
+            }
+        }
+    }
+}
+
+
 

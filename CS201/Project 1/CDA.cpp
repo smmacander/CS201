@@ -195,7 +195,7 @@ void CDA<elmtype>::DelFront(){
         if (front == size -1)
             front = 0;
         else 
-            front = front+1;
+            front = ((front+1)%capacity);
     size--;
     if (size < capacity/4){
         CDA newCDA(capacity / 2);
@@ -293,12 +293,34 @@ void CDA<elmtype>::QuickSort(){
 
 template <class elmtype>
 void CDA<elmtype>::CountingSort(int m){
-    int range = m;
-    vector<int> count(range), output(size);
-    for(int i = front; i <= back; i = ((i+1)%capacity)){
-
+    
+    int max = m;
+    int min = 0;
+    int range = max - min + 1;
+    vector<int> count(range), output(size), input(size);
+    int inputIndex = 0;
+    for(int i = front; i != back + 1; i = ((i+1)%capacity)){
+        input[inputIndex] = array[i]; 
+        inputIndex++;
+    }
+    for(int i = 0; i < input.size(); i++) 
+        count[input[i]-min]++; 
+          
+    for(int i = 1; i < count.size(); i++) 
+           count[i] += count[i-1]; 
+    
+    for(int i = input.size()-1; i >= 0; i--) 
+    {  
+         output[ count[input[i]-min] -1 ] = input[i];  
+              count[input[i]-min]--;  
+    }  
+    int outputIndex = 0;
+    for(int i = front; i != back + 1; i = ((i+1)%capacity)){
+        array[i] = output[outputIndex];
+        outputIndex++; 
     }
 }
+
 
 //Helper functions for recursive algorithms
 //#############################################################################################################################################################

@@ -78,4 +78,7 @@ int main(){
 	A.AddEnd(1);
 	for (int i=0; i< A.Length();i++) cout << A[i] << " ";  cout << endl;
 	//"1 2 3 4 5 6 7 8 9 10 1"
+	A.CountingSort(10);
+	for (int i=0; i< A.Length();i++) cout << A[i] << " ";  cout << endl;
+	//"1 1 2 3 4 5 6 7 8 9 10"
 }

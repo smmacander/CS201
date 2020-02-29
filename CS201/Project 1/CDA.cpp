@@ -28,7 +28,7 @@ class CDA {
         CDA(int s); //constructor of size s
         ~CDA(); //destructor
         CDA(const CDA& a); //copy constructor
-        CDA & operator=(const CDA &);  //overloaded assignment operator
+        CDA<elmtype>& operator=(CDA<elmtype> &other);  //overloaded assignment operator
         elmtype& operator[](int i); //traditional bracket operator
         void AddEnd(const elmtype &item); //add item to the end of array
         void AddFront(const elmtype &item); //add item to the front of array
@@ -91,7 +91,7 @@ CDA<elmtype>::CDA(const CDA& a){
     memcpy(array, a.array, sizeof(elmtype)*capacity);
 }
 
-template <class elmtype>
+/*template <class elmtype>
 CDA<elmtype> & CDA<elmtype>::operator=(const CDA &a){
     if(this == &a) return *this;
     delete[] array;
@@ -105,6 +105,22 @@ CDA<elmtype> & CDA<elmtype>::operator=(const CDA &a){
         array[i] = a[i];
     }
     return array;
+}*/
+
+template <class elmtype>
+CDA<elmtype>& CDA<elmtype>::operator=(CDA<elmtype> &other){
+    if(this == &other) return *this;
+    delete[] array; 
+    array = new elmtype[capacity];
+    capacity = other.capacity;
+    size = other.size;
+    front = other.front;
+    back = other.back;
+    isOrdered = other.isOrdered;
+    for(int i = 0; i < size; i++){
+        array[i] = array[i];
+    }
+    return *this;
 }
 
 template <class elmtype>

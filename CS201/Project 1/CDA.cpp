@@ -274,7 +274,6 @@ elmtype CDA<elmtype>::Select(int k){
         return array[(front + k - 1) % (capacity)];
     }
     //cout << " ##### I'm not ordered, I'm about to run the kthsmallest element algorithm! ##### " << endl;
-    isOrdered = false;
     return kthSmallest(array, front, back, k, size, capacity);
 }
 

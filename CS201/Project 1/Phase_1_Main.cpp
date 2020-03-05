@@ -79,7 +79,9 @@ void test1(ostream &fp){
 	fp << "SetOrdered is " << A.SetOrdered() << endl;
 	fp << "Select is " << A.Select(3) << endl;
 	fp << "Select is " << A.Search(50) << endl;
+	for (int i=0; i< A.Length();i++) fp << A[i] << " "; fp << endl;
 	A.AddFront(11); 
+	for (int i=0; i< A.Length();i++) fp << A[i] << " "; fp << endl;
 	fp << "SetOrdered is " << A.SetOrdered() << endl;
 	fp << "Select is " << A.Select(3) << endl;
 	fp << "Select is " << A.Search(50) << endl;

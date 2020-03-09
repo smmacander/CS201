@@ -16,12 +16,14 @@ struct node{
             this->right = NULL;
             this->parent = NULL;
             this->color = 'b';
+            this->size = 1;
         }
         node<keytype, valuetype>(){
             this->left = NULL;
             this->right = NULL;
             this->parent = NULL;
             this->color = 'b';
+            this->size = 0;
         };
 };
 
@@ -38,6 +40,8 @@ class RBTree{
         void printInorder(node<keytype, valuetype> *node); //helper function to recrusively print out Inorder traversal of currentNode
         void printPreorder(node<keytype, valuetype> *node); //helper function to recrusively print out preorder traversal of currentNode
         void printPostorder(node<keytype, valuetype> *node); //helper function to recrusively print out postorder traversal of currentNode
+        node<keytype, valuetype> * findNode(keytype k); //helper function that doesn't specifically return a pointer to the value type like search().
+        keytype selectHelper(node<keytype, valuetype> *x, int i); //helper function to recursively select the value at position
     public:
         RBTree();  //Default Constructor. The Tree should be empty
         RBTree(keytype k[], valuetype V[], int s); //For this constructor the tree should be built using the arrays K and V containing s items of keytype and valuetype
@@ -57,16 +61,26 @@ class RBTree{
 
 template <class keytype, class valuetype>
 RBTree<keytype, valuetype>::RBTree(){
-    nil->color = 'b';
-    root = NULL;
     treeSize = 0;
+    nil = new node<keytype, valuetype>();
+    nil->color = 'b';
+    nil->left = nullptr;
+    nil->right = nullptr;
+    nil->parent = nullptr;
+    nil->size = 0;
+    root = nil;
 }
 
 template <class keytype, class valuetype>
 RBTree<keytype, valuetype>::RBTree(keytype k[], valuetype V[], int s){
-    nil->color = 'b';
-    root = NULL;
+    nil = new node<keytype, valuetype>();
     treeSize = 0;
+    nil->color = 'b';
+    nil->left = nullptr;
+    nil->right = nullptr;
+    nil->parent = nullptr;
+    nil->size = 0;
+    root = nil;
     for(int i = 0; i < s; i++){
         //cout << "k: " << k[i] << " v: " << V[i] << endl;
         insert(k[i], V[i]);
@@ -84,11 +98,17 @@ void RBTree<keytype, valuetype>::DestroyRecursive(node<keytype, valuetype> *node
 
 template <class keytype, class valuetype>
 RBTree<keytype, valuetype>::~RBTree(){
-    DestroyRecursive(root);
+    NULL;
+    //DestroyRecursive(root);
 }
 
 template <class keytype, class valuetype>
 valuetype * RBTree<keytype, valuetype>::search(keytype k){
+    return &(findNode(k))->value;
+}
+
+template <class keytype, class valuetype>
+node<keytype, valuetype> * RBTree<keytype, valuetype>::findNode(keytype k){
     if(root == NULL){
         return NULL;
     }
@@ -100,7 +120,7 @@ valuetype * RBTree<keytype, valuetype>::search(keytype k){
         else if (k < currentNode->key)
             currentNode = currentNode->left;
         else
-            return &currentNode->value;
+            return currentNode;
     }
     return NULL;
 }
@@ -108,10 +128,6 @@ valuetype * RBTree<keytype, valuetype>::search(keytype k){
 template <class keytype, class valuetype>
 void RBTree<keytype, valuetype> :: insert(keytype k, valuetype v){
     node<keytype, valuetype> *z = new node<keytype, valuetype>(k, v);
-    z->left = nil;
-    z->right = nil;
-    z->parent = nil;
-    z->size = 1;
     node<keytype, valuetype> *y = nil;
     node<keytype, valuetype> *x = root;
     while(x != nil){
@@ -138,10 +154,9 @@ void RBTree<keytype, valuetype> :: insert(keytype k, valuetype v){
 
 template <class keytype, class valuetype>
 void RBTree<keytype, valuetype> :: InsertFixUp(node<keytype, valuetype> *z){
-    cout << "Bout to fix key: " << z->key << endl;
-    cout << nil->color << endl;
     while(z->parent->color == 'r'){
         if(z->parent == z->parent->parent->left){
+            //cout << z->parent->key << endl;
             node<keytype, valuetype> *y = z->parent->parent->right;
             if(y->color == 'r'){
                 z->parent->color = 'b';
@@ -178,6 +193,23 @@ void RBTree<keytype, valuetype> :: InsertFixUp(node<keytype, valuetype> *z){
             }   
         }   
     }
+    root->color = 'b';
+}
+
+template <class keytype, class valuetype>
+int RBTree<keytype, valuetype> :: remove(keytype k){
+    /*node<keytype, valuetype> *z = findNode(k);
+    if(z == NULL){
+        return 0;
+    }
+    else{
+        node<keytype, valuetype> *y = z;
+        char yOriginalColor = y->color;
+        if(z->left == nil){
+            node<keytype, valuetype> *x = z->left;
+        }
+    }*/
+    return 0;
 }
 
 template <class keytype, class valuetype>
@@ -224,7 +256,33 @@ void RBTree<keytype, valuetype> :: RightRotate(node<keytype, valuetype> *x){
 
 template <class keytype, class valuetype>
 int RBTree<keytype, valuetype> :: rank(keytype k){
-    return 0;
+    node<keytype, valuetype> *x = findNode(k);
+    int r = x->left->size + 1;
+    node<keytype, valuetype> *y = x;
+    while(y != root){
+        if(y == y->parent->right){
+            r += y->parent->left->size + 1;
+        }
+        y = y->parent;
+    }
+    return r;
+}
+
+template <class keytype, class valuetype>
+keytype RBTree<keytype, valuetype> :: select(int pos){
+    return selectHelper(root, pos);
+}
+
+template <class keytype, class valuetype>
+keytype RBTree<keytype, valuetype> :: selectHelper(node<keytype, valuetype> *x, int pos){
+    int r = x->left->size + 1;
+    if(pos == r){
+        return x->key;
+    }
+    else if(pos < r){
+        return(selectHelper(x->left, pos));
+    }
+    else{return selectHelper(x->right, pos - r);}
 }
 
 template <class keytype, class valuetype>
@@ -254,7 +312,7 @@ void RBTree<keytype, valuetype> :: printPreorder(node<keytype, valuetype> *x){
     if (x == NULL) 
         return; 
 
-    cout << x->key << " "; 
+    cout << x->key << " ";
     printPreorder(x->left);  
     printPreorder(x->right); 
 }

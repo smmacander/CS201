@@ -14,16 +14,16 @@ int main(){
 	cout << *(T2.search("C")) << endl;
 	// Should output 8
 	
-	//cout << T1.rank("C") << endl;
+	cout << T1.rank("C") << endl;
 	//Should output 3
 	
-	//cout <<T1.select(3) << endl;
+	cout <<T1.select(3) << endl;
 	//Should output C 
 	
-	//T2.preorder();
+	T2.preorder();
 	//Should output D B A C F E H G I K
 	
-	//T2.inorder();
+	T2.inorder();
 	//Should output	A B C D E F G H I K
 	
 	//cout << T2.remove("D") << endl;

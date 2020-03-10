@@ -7,6 +7,8 @@ int main(){
 	int V[10] = {10,9,8,7,6,5,4,3,2,1};
 
 	RBTree<string,int> T1, T2(K,V,10);
+
+	cout << *(NULL) << endl;
 	
 	for(int i=0; i<10; i++) T1.insert(K[i],V[i]);
 	// T1 and T2 should be identical trees
@@ -26,29 +28,33 @@ int main(){
 	T2.inorder();
 	//Should output	A B C D E F G H I K
 	
-	//cout << T2.remove("D") << endl;
+	T2.print2D(T2.root);
+
+	cout << T2.remove("D") << endl;
 	//Should output 1
-	
-	//T2.preorder();
+
+	T2.preorder();
 	//Should output E B A C H F G I K
 	
-	//T2.inorder();
+	T2.inorder();
 	//Should output	A B C E F G H I K
+
+	T2.print2D(T2.root);
 	
-	//cout << T2.remove("J") << endl;
+	cout << T2.remove("J") << endl;
 	//Should output 0
 	
-	//cout <<T2.rank("G") << endl;
+	cout <<T2.rank("G") << endl;
 	//Should output 6
 	
-	//cout <<*(T1.successor("C"))<<endl;
+	cout <<*(T1.successor("C"))<<endl;
 	//Should output D
 	
-	//cout <<*(T1.predecessor("C"))<<endl;
+	cout <<*(T1.predecessor("C"))<<endl;
 	//Should output B		
 
 	
-    /*RBTree<int,int> X;
+    RBTree<int,int> X;
 	for (int i=1;i<100000;i++) X.insert(i,i);
 	for (int i=1;i<100000;i++) {
 		if(X.rank(i) != i) cout << "Rank error" << endl;

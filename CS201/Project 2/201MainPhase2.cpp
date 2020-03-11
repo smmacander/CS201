@@ -7,8 +7,6 @@ int main(){
 	int V[10] = {10,9,8,7,6,5,4,3,2,1};
 
 	RBTree<string,int> T1, T2(K,V,10);
-
-	cout << *(NULL) << endl;
 	
 	for(int i=0; i<10; i++) T1.insert(K[i],V[i]);
 	// T1 and T2 should be identical trees
@@ -28,7 +26,7 @@ int main(){
 	T2.inorder();
 	//Should output	A B C D E F G H I K
 	
-	T2.print2D(T2.root);
+	//T2.print2D(T2.root);
 
 	cout << T2.remove("D") << endl;
 	//Should output 1
@@ -39,7 +37,7 @@ int main(){
 	T2.inorder();
 	//Should output	A B C E F G H I K
 
-	T2.print2D(T2.root);
+	//T2.print2D(T2.root);
 	
 	cout << T2.remove("J") << endl;
 	//Should output 0

@@ -10,6 +10,7 @@ void test3(ostream &fp);
 void test4(ostream &fp);
 void test5(ostream &fp);
 void test6(ostream &fp);
+void test7(ostream &fp);
 
 void foo(CDA<int> x) {
 	for (int i=0; i<x.Length()/2; i++){
@@ -44,6 +45,9 @@ int main(int argc, char **argv){
 		case 6:
 			test6(cout);
 			break;
+        case 7:
+            test7(cout);
+            break;
 	}
 }
 
@@ -189,4 +193,17 @@ void test6(ostream &fp){
 	if(printWrapper) fp << "-----------------Finished Test----------------------" << endl;
 }
 
+void test7(ostream &fp){
+	if(printWrapper) fp << "Running test 2" << endl;
+	CDA<int> A;
+	for(int i = 0; i < 100; i++) A.AddFront(i);
+	fp << "SetOrdered is " << A.SetOrdered() << endl;
+	//fp << "Select is " << A.Select(8000) << endl;
+	A.QuickSort();
+    for (int i=0; i< A.Length();i++) fp << A[i] << " ";  fp << endl;
+	fp << "SetOrdered is " << A.SetOrdered() << endl;
+	//fp << "Search is " << A.Search(8000) << endl;
+	//fp << "Select is " << A.Select(800) << endl;
+	if(printWrapper) fp << "-----------------Finished Test----------------------" << endl;
+}
 

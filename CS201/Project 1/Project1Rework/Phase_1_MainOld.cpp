@@ -112,7 +112,7 @@ void test1(ostream &fp){
 void test2(ostream &fp){
 	if(printWrapper) fp << "Running test 2" << endl;
 	CDA<int> A;
-	for(int i = 0; i < 100000; i++) A.AddFront(i);
+	for(int i = 0; i < 65536; i++) A.AddFront(i);
 	fp << "SetOrdered is " << A.SetOrdered() << endl;
 	fp << "Select is " << A.Select(300) << endl;
 	A.QuickSort();

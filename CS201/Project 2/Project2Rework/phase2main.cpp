@@ -214,8 +214,20 @@ void removeIndex(int removeIndex){
                 cout << "Rank error after delete " << X.rank(i) << " should be " << i << " - " << i-i/removeIndex << endl;
 			}
             if(*(X.search(i)) != size-i) searchError++; //cout << "Search error after delete" << endl;
+			/*
+			X.print2DMain();
+			cout << "#############" << endl << "About to remove i: " << i << endl;
+			*/
             X.remove(i);
+			//X.print2DMain();
+			/*
+			cout << "#############" << endl << "About to insert i: " << i << endl;
+			*/
 			X.insert(i,size-i);
+			/*
+			X.print2DMain();
+			cout << "#############" << endl;
+			*/
 		}
 	}
 	printErrors("Rank after delete",rankError);

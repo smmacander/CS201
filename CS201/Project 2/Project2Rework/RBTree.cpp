@@ -334,18 +334,19 @@ void RBTree<keytype, valuetype>::RBDelete(RBTree<keytype, valuetype> *T, treeNod
         x = z->left;
         RBTransplant(T, z, z->left);
     }
-    else{
-        y = TreeMinimum(z->right);
+    else{ //z = 21;
+        y = TreeMinimum(z->right); //23
         treeNode<keytype, valuetype> *w = new treeNode<keytype, valuetype>;
-        w = y->parent;
+        w = y->parent; //25
         while(w != z){
             w->size--;
             w = w->parent;
         }
         yOriginalColor = y->color;
-        x = y->right;
+        x = y->right; //24
         if(y->parent == z) x->parent = y;
         else{
+            sizeSwap(y, y->right);
             RBTransplant(T, y, y->right);
             y->right = z->right;
             y->right->parent = y;

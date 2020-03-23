@@ -29,16 +29,13 @@ void test6();
 void removeIndex(int removeIndex);
 
 int main(int argc, char **argv){
-	/*
 	int testToRun = atoi(argv[1]);
 	switch (testToRun){
 		case 1:
 			test1();
 			break;
 		case 2:
-		*/
 			test2();
-			/*
 			break;
 		case 3:
 			test3();
@@ -53,7 +50,6 @@ int main(int argc, char **argv){
 			test6();
 			break;
 	}
-	*/
 	return 0;
 }
 
@@ -167,8 +163,9 @@ void test6(){
             if(X.predecessor(i) != NULL) cout << "Doesn't return NULL for predecessor" << endl;
 		}
         else if(*(X.predecessor(i)) != i-1){
+			cout << "i: " << i << " predecessor: " << *(X.predecessor(i)) << endl;
             predErrors++;
-            //printf("pred error %d\n",predErrors);
+            printf("pred error %d\n",predErrors);
         }
 	}
 	printErrors("Pred errors",predErrors);
@@ -192,26 +189,31 @@ void removeIndex(int removeIndex){
 	int searchError = 0;
     RBTree<int,int> X;
 	int size = 100000;
+	bool error;
     for (int i=size;i>=0;i--) X.insert(i,size-i);
 	for (int i=0;i<size;i+=removeIndex) X.remove(i);
 	for (int i=1;i<size-size/removeIndex;i++){
-        
+        error = false;
         int part1Answer = i / removeIndex;
 		int answer = i+(i+(i+(i+(i+(i + i / removeIndex)/removeIndex)/removeIndex)/removeIndex)/removeIndex)/removeIndex;
 
 		//printf("i is %d, Select %d, Rank %d, Search %d\n",i, answer, i-i/removeIndex, size-i);
-        
-        if(X.select(i) != answer){				
+        if(X.select(i) != answer){	
+			error = true;			
 			selectError++;
-			//cout << "i is " << i << " Select error after delete " << X.select(i)  << " should be " <<  answer << " or " << part1Answer << endl;
+			cout << "i is " << i << " Select error after delete " << X.select(i)  << " should be " <<  answer << " or " << part1Answer << endl;
 		}
+		//if(error){
+			//X.print2DMain();
+			//cout << "#############" << endl;
+		//}
 		if (i%removeIndex) {
 			//cout << i << " is i" << endl;
 			if(X.rank(i) != i-i/removeIndex){
                 rankError++; 
-                //cout << "Rank error after delete " << X.rank(i) << " should be " << i << " - " << i-i/removeIndex << endl;
+                cout << "Rank error after delete " << X.rank(i) << " should be " << i << " - " << i-i/removeIndex << endl;
 			}
-            if(*(X.search(i)) != size-i) searchError++;// cout << "Search error after delete" << endl;
+            if(*(X.search(i)) != size-i) searchError++; //cout << "Search error after delete" << endl;
             X.remove(i);
 			X.insert(i,size-i);
 		}

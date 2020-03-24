@@ -51,7 +51,7 @@ class RBTree{
         treeNode<keytype, valuetype> * TreeMaximum(treeNode<keytype, valuetype> *x);
         treeNode<keytype, valuetype> * TreeSuccessor(treeNode<keytype, valuetype> *x);
         treeNode<keytype, valuetype> * TreePredecessor(treeNode<keytype, valuetype> *x);
-        treeNode<keytype, valuetype> * copy(treeNode <keytype, valuetype> *root); //helper function to copy data in operators
+        treeNode<keytype, valuetype> * copy(treeNode <keytype, valuetype> *r); //helper function to copy data in operators
         void chop(treeNode <keytype, valuetype> *n); //helper function to chop data in operators
         void sizeSwap(treeNode <keytype, valuetype> *a, treeNode <keytype, valuetype> *b); 
 
@@ -59,6 +59,7 @@ class RBTree{
         RBTree(); //Default Constructor. The tree should be empty
         RBTree(keytype k[], valuetype V[], int s); //For this constructor thetree should be built using the arrays   K and V containing s items of keytypeand valuetype.
         RBTree(const RBTree<keytype, valuetype>& source); //copy constructor
+        ~RBTree(); //Destructor for the class.
         RBTree<keytype, valuetype>& operator=(const RBTree<keytype, valuetype>& other); //copy assignment operator
         valuetype * search(keytype k); //Traditional search.  Should return a pointer to the valuetype stored with the key.  If the key is not stored in the tree then the function should return NULL.
         void insert(keytype k, valuetype v); //Inserts the node with key k and value v into the tree.
@@ -82,33 +83,24 @@ void RBTree<keytype, valuetype> :: print2DMain(){
 }
 
 template <class keytype, class valuetype>
-void RBTree<keytype, valuetype> :: print2DUtil(treeNode<keytype, valuetype> *root, int space)  
-{  
-    // Base case  
+void RBTree<keytype, valuetype> :: print2DUtil(treeNode<keytype, valuetype> *root, int space){  
     if (root == nil)  
         return;  
   
-    // Increase distance between levels  
     space += COUNT;  
-  
-    // Process right child first  
+    
     print2DUtil(root->right, space);  
   
-    // Print current node after space  
-    // count  
     cout<<endl;  
     for (int i = COUNT; i < space; i++)  
         cout<<" ";  
     cout<<root->key<<","<<root->size<<"\n";  
   
-    // Process left child  
     print2DUtil(root->left, space);  
 }  
 
 template <class keytype, class valuetype>
-void RBTree<keytype, valuetype> :: print2D(treeNode<keytype, valuetype> *root)  
-{  
-    // Pass initial space count as 0  
+void RBTree<keytype, valuetype> :: print2D(treeNode<keytype, valuetype> *root){   
     print2DUtil(root, 0);  
 }  
 
@@ -156,10 +148,14 @@ RBTree<keytype, valuetype> :: RBTree(const RBTree<keytype, valuetype> &RBTree){
 }
 
 template <class keytype, class valuetype>
+RBTree<keytype, valuetype> :: ~RBTree<keytype, valuetype>(){
+    NULL;
+}
+
+template <class keytype, class valuetype>
 RBTree<keytype, valuetype>& RBTree<keytype, valuetype> :: operator=(const RBTree<keytype, valuetype>& other){
     if(this != &other){
-        treeSize = 0;
-        chop(root);
+        treeSize = other.treeSize;
         nil = new treeNode<keytype, valuetype>();
         nil->left = nullptr;
         nil->right = nullptr;
@@ -168,13 +164,17 @@ RBTree<keytype, valuetype>& RBTree<keytype, valuetype> :: operator=(const RBTree
         nil->color = 'b';
         root = new treeNode<keytype, valuetype>();
         root = copy(other.root);
+        root->parent = nil;
     }
     return *this;
 }
 
 template<class keytype, class valuetype>
 valuetype * RBTree<keytype, valuetype>::search(keytype k){
-    return &(TreeSearch(root, k)->value);
+    treeNode<keytype, valuetype> *a = new treeNode<keytype, valuetype>();
+    a = TreeSearch(root, k);
+    if(a->key == k) return &(a->value);
+    else return NULL;
 }
 
 template<class keytype, class valuetype>
@@ -187,15 +187,11 @@ treeNode<keytype, valuetype> * RBTree<keytype, valuetype>::TreeSearch(treeNode<k
 template<class keytype, class valuetype>
 void RBTree<keytype, valuetype>::insert(keytype k, valuetype v){
     treeNode<keytype, valuetype> *z = new treeNode<keytype, valuetype>(k, v);
-    //cout << "Inserting K: " << k << ", v: " << v << endl;
     z->left = nil;
     z->right = nil;
     z->parent = nil;
     RBInsert(this, z);
     treeSize++;
-    //cout << "Inserting: " << k << endl;
-    //print2DMain();
-    //for(int i = 0; i <= 100; i++) cout << "#";
 };
 
 template<class keytype, class valuetype>
@@ -266,7 +262,6 @@ void RBTree<keytype, valuetype>::RBInsertFixUp(RBTree<keytype, valuetype> *T, tr
 
 template <class keytype, class valuetype>
 void RBTree<keytype, valuetype>::LeftRotate(RBTree<keytype, valuetype> *T, treeNode<keytype, valuetype> *x){
-    //cout << "Left Rotate being performed" << endl;
     treeNode<keytype, valuetype> *y = new treeNode<keytype, valuetype>;
     y = x->right;                               //set y
     x->right = y->left;                         //turn y's left subtree into x's right subtree
@@ -283,7 +278,6 @@ void RBTree<keytype, valuetype>::LeftRotate(RBTree<keytype, valuetype> *T, treeN
 
 template <class keytype, class valuetype>
 void RBTree<keytype, valuetype>::RightRotate(RBTree<keytype, valuetype> *T, treeNode<keytype, valuetype> *x){
-    //cout << "Right Rotate being performed" << endl
     treeNode<keytype, valuetype> *y = new treeNode<keytype, valuetype>;
     y = x->left;                                //set y
     x->left = y->right;                         //turn y's right subtree into x's left subtree
@@ -302,10 +296,8 @@ template <class keytype, class valuetype>
 int RBTree<keytype, valuetype>::remove(keytype k){
     treeNode<keytype, valuetype> *a = new treeNode<keytype, valuetype>;
     a = TreeSearch(root, k);
-    if(a != NULL){
+    if(a->size != 0){
         RBDelete(this, a);
-        //cout << "Deleting: " << k << endl;
-        //print2DMain();
         return 1;
     }
     return 0;
@@ -316,14 +308,10 @@ void RBTree<keytype, valuetype>::RBDelete(RBTree<keytype, valuetype> *T, treeNod
     treeNode<keytype, valuetype> *y = new treeNode<keytype, valuetype>;
     y = z;
     char yOriginalColor = y->color;
-    //print2DMain();
-    //cout << "Decrementing: " << endl;
     while(y->size != 0){
-        //cout << "|| size: " << y->size << " key: " << y->key << "|| " << endl;
         y->size--;
         y = y->parent;
     }
-    //print2DMain();
     y = z;
     treeNode<keytype, valuetype> *x = new treeNode<keytype, valuetype>;
     if(z->left == T->nil){
@@ -334,16 +322,16 @@ void RBTree<keytype, valuetype>::RBDelete(RBTree<keytype, valuetype> *T, treeNod
         x = z->left;
         RBTransplant(T, z, z->left);
     }
-    else{ //z = 21;
-        y = TreeMinimum(z->right); //23
+    else{
+        y = TreeMinimum(z->right);
         treeNode<keytype, valuetype> *w = new treeNode<keytype, valuetype>;
-        w = y->parent; //25
+        w = y->parent;
         while(w != z){
             w->size--;
             w = w->parent;
         }
         yOriginalColor = y->color;
-        x = y->right; //24
+        x = y->right;
         if(y->parent == z) x->parent = y;
         else{
             sizeSwap(y, y->right);
@@ -472,11 +460,9 @@ template <class keytype, class valuetype>
 treeNode<keytype, valuetype> * RBTree<keytype, valuetype>::OSSelect(treeNode<keytype, valuetype> *x, int i){
     while(x->size != 0){
         int r = x->left->size + 1;
-        //cout << "i: " << i << " == r: " << r << endl;
         if(i == r) return x;
         else if (i < r) return OSSelect(x->left, i);
         else{
-
             return OSSelect(x->right, i - r);
         }
     }
@@ -539,6 +525,7 @@ int RBTree<keytype, valuetype>::size(){
 template <class keytype, class valuetype>
 void RBTree<keytype, valuetype>::preorder(){
     PreOrderTreeWalk(root);
+    cout << endl;
 }
 
 template <class keytype, class valuetype>
@@ -553,6 +540,7 @@ void RBTree<keytype, valuetype>::PreOrderTreeWalk(treeNode<keytype, valuetype> *
 template <class keytype, class valuetype>
 void RBTree<keytype, valuetype>::inorder(){
     InOrderTreeWalk(root);
+    cout << endl;
 }
 
 template <class keytype, class valuetype>
@@ -567,6 +555,7 @@ void RBTree<keytype, valuetype>::InOrderTreeWalk(treeNode<keytype, valuetype> *x
 template <class keytype, class valuetype>
 void RBTree<keytype, valuetype>::postorder(){
     PostOrderTreeWalk(root);
+    cout << endl;
 }
 
 template <class keytype, class valuetype>
@@ -579,13 +568,20 @@ void RBTree<keytype, valuetype>::PostOrderTreeWalk(treeNode<keytype, valuetype> 
 }
 
 template <class keytype, class valuetype>
-treeNode<keytype, valuetype> * RBTree<keytype, valuetype> :: copy(treeNode <keytype, valuetype> *root){
+treeNode<keytype, valuetype> * RBTree<keytype, valuetype> :: copy(treeNode <keytype, valuetype> *r){
     treeNode<keytype, valuetype> *newRoot;
-    if(root->size != 0){
-        newRoot = new treeNode<keytype, valuetype>(root->key, root->value);
-        newRoot->color = root->color;
-        newRoot->left  = copy(root->left); 
-        newRoot->right = copy(root->right); 
+    if(r->size != 0){
+        newRoot = new treeNode<keytype, valuetype>(r->key, r->value);
+        newRoot->color = r->color;
+        newRoot->size = r->size;
+        treeNode<keytype, valuetype> *a = new treeNode<keytype, valuetype>;
+        a = copy(r->left);
+        newRoot->left  = a;
+        treeNode<keytype, valuetype> *b = new treeNode<keytype, valuetype>;
+        b = copy(r->right); 
+        newRoot->right = b;
+        newRoot->left->parent = newRoot;
+        newRoot->right->parent = newRoot; 
     } else return nil;
     return newRoot; 
 }
